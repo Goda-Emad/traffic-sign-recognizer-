@@ -89,7 +89,7 @@ st.divider()
 st.markdown(f"### {get_text('🚸 Recognized Signs', '🚸 الإشارات المدعومة')}")
 
 cols = st.columns(len(CLASS_LABELS))
-for col, (emoji, label) in zip(cols, CLASS_LABELS):
+for col, (emoji, label) in zip(cols, CLASS_LABELS.values()):
     with col:
         st.markdown(
             f"<div class='sign-card'>"
