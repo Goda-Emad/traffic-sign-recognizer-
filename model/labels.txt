@@ -1,1 +1,10 @@
-
+0 Class 1
+1 Class 2
+2 Class 3
+3 Class 4
+4 Class 5
+Class 1 = Stop (فولدر 14)
+Class 2 = No Entry (فولدر 17)
+Class 3 = Keep Right (فولدر 38)
+Class 4 = Speed 20 (فولدر 0)
+Class 5 = Speed 30 (فولدر 1)
