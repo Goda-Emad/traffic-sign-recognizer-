@@ -1,1 +1,2 @@
-
+from core.config import APP_NAME, APP_ICON, APP_VERSION, AUTHOR, GITHUB_URL, DATASET_URL
+from core.constants import CLASS_LABELS, MODEL_PATH, LABELS_PATH, IMAGE_SIZE
