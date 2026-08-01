@@ -5,6 +5,75 @@
     font-family: 'Inter', sans-serif;
 }
 
+/* ══════════════════════════════════════════════════════
+   THEME VARIABLES — Dark (default)
+   ══════════════════════════════════════════════════════ */
+:root {
+    --bg-primary:    #1A1A1A;
+    --bg-secondary:  #2D2D2D;
+    --bg-tertiary:   #3a3a3a;
+    --border-color:  #3a3a3a;
+    --accent:        #E63946;
+    --accent-soft:   #E6394622;
+    --text-primary:  #F1F1F1;
+    --text-muted:    #888888;
+    --text-faint:    #555555;
+}
+
+/* ══════════════════════════════════════════════════════
+   LIGHT THEME OVERRIDES
+   ══════════════════════════════════════════════════════ */
+body[data-theme="light"],
+[data-theme="light"] {
+    --bg-primary:   #F5F5F5;
+    --bg-secondary: #FFFFFF;
+    --bg-tertiary:  #E8E8E8;
+    --border-color: #DDDDDD;
+    --accent:       #E63946;
+    --accent-soft:  #E6394615;
+    --text-primary: #1A1A1A;
+    --text-muted:   #555555;
+    --text-faint:   #888888;
+}
+
+/* ══════════════════════════════════════════════════════
+   BASE — Streamlit overrides
+   ══════════════════════════════════════════════════════ */
+.stApp {
+    background-color: var(--bg-primary) !important;
+}
+
+/* Hide default Streamlit sidebar nav */
+[data-testid="stSidebarNav"] {
+    display: none !important;
+}
+
+/* ── Sidebar ─────────────────────────────────────────── */
+[data-testid="stSidebar"] {
+    background-color: var(--bg-secondary) !important;
+    border-right: 1px solid var(--border-color) !important;
+}
+
+[data-testid="stSidebar"] > div:first-child {
+    padding: 0 !important;
+}
+
+/* ── All text inherits theme ─────────────────────────── */
+p, li, span, td, th, div {
+    color: var(--text-primary);
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: var(--text-primary);
+}
+
+/* Streamlit default text */
+.stMarkdown p,
+.stMarkdown span,
+.element-container p {
+    color: var(--text-primary) !important;
+}
+
 /* ── Header ──────────────────────────────────────────── */
 .header {
     text-align: center;
@@ -14,27 +83,28 @@
 .header h1 {
     font-size: 2.5rem;
     font-weight: 800;
-    color: #F1F1F1;
+    color: var(--text-primary);
     margin-bottom: 0.3rem;
 }
 
 .header p {
-    color: #888;
+    color: var(--text-muted);
     font-size: 1rem;
 }
 
-/* ── Result Card ─────────────────────────────────────── */
+/* ── Cards ───────────────────────────────────────────── */
 .result-card {
-    background: #2D2D2D;
-    border: 1px solid #E63946;
+    background: var(--bg-secondary);
+    border: 1px solid var(--accent);
     border-radius: 16px;
     padding: 1.5rem 2rem;
     margin-bottom: 1rem;
-    transition: transform 0.2s ease;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .result-card:hover {
     transform: translateY(-3px);
+    box-shadow: 0 4px 20px rgba(230, 57, 70, 0.15);
 }
 
 .result-emoji {
@@ -46,47 +116,108 @@
 .result-label {
     font-size: 1.8rem;
     font-weight: 700;
-    color: #F1F1F1;
+    color: var(--text-primary);
     text-align: center;
 }
 
 .result-confidence {
     font-size: 1rem;
-    color: #E63946;
+    color: var(--accent);
     text-align: center;
     margin-top: 0.3rem;
 }
 
+/* ── Sidebar Section Cards ───────────────────────────── */
+.sidebar-section {
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 0.8rem 1rem;
+    margin: 0.5rem 0.8rem;
+}
+
+.sidebar-section-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    margin: 0 0 0.6rem 0;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* ── Sidebar Nav Links ───────────────────────────────── */
+.nav-item {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.5rem 0.7rem;
+    border-radius: 8px;
+    margin-bottom: 0.25rem;
+    text-decoration: none !important;
+    color: var(--text-primary) !important;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: background 0.15s ease;
+}
+
+.nav-item:hover {
+    background: var(--accent-soft);
+    color: var(--accent) !important;
+}
+
+.nav-item.active {
+    background: var(--accent-soft);
+    color: var(--accent) !important;
+    font-weight: 700;
+}
+
+/* Streamlit page_link override */
+[data-testid="stSidebar"] a {
+    color: var(--text-primary) !important;
+    text-decoration: none !important;
+    padding: 0.4rem 0.6rem;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    font-weight: 500;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+
+[data-testid="stSidebar"] a:hover {
+    background: var(--accent-soft) !important;
+    color: var(--accent) !important;
+}
+
 /* ── Team Card ───────────────────────────────────────── */
 .team-card {
-    background: #2D2D2D;
-    border: 1px solid #3a3a3a;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
     border-radius: 12px;
     padding: 1.2rem;
     text-align: center;
-    transition: transform 0.2s ease;
+    transition: transform 0.2s ease, border-color 0.2s ease;
 }
 
 .team-card:hover {
     transform: translateY(-3px);
-    border-color: #E63946;
+    border-color: var(--accent);
 }
 
 .team-name {
     font-size: 1rem;
     font-weight: 700;
-    color: #F1F1F1;
+    color: var(--text-primary);
     margin-bottom: 0.3rem;
 }
 
 .team-role {
     font-size: 0.8rem;
-    color: #888;
+    color: var(--text-muted);
     margin-bottom: 0.5rem;
 }
 
 .team-card a {
-    color: #E63946;
+    color: var(--accent);
     text-decoration: none;
     font-size: 0.85rem;
     font-weight: 600;
@@ -99,8 +230,8 @@
 /* ── Tags ────────────────────────────────────────────── */
 .tag {
     display: inline-block;
-    background: #E6394622;
-    color: #E63946;
+    background: var(--accent-soft);
+    color: var(--accent);
     border-radius: 8px;
     padding: 0.3rem 0.8rem;
     font-size: 0.85rem;
@@ -108,68 +239,108 @@
     font-weight: 600;
 }
 
-/* ── Sidebar ─────────────────────────────────────────── */
-[data-testid="stSidebar"] {
-    background-color: #1A1A1A !important;
-    border-right: 1px solid #2D2D2D;
-}
-
 /* ── Buttons ─────────────────────────────────────────── */
 .stButton > button {
-    background-color: #E63946 !important;
+    background-color: var(--accent) !important;
     color: #ffffff !important;
     border: none !important;
     border-radius: 8px !important;
     font-weight: 600 !important;
-    transition: opacity 0.2s ease !important;
+    transition: opacity 0.2s ease, transform 0.1s ease !important;
 }
 
 .stButton > button:hover {
-    opacity: 0.85 !important;
+    opacity: 0.88 !important;
+    transform: translateY(-1px) !important;
+}
+
+/* ── Radio buttons ───────────────────────────────────── */
+.stRadio label {
+    color: var(--text-primary) !important;
 }
 
 /* ── File Uploader ───────────────────────────────────── */
 [data-testid="stFileUploader"] {
-    background: #2D2D2D;
-    border: 2px dashed #E63946;
+    background: var(--bg-secondary);
+    border: 2px dashed var(--accent);
     border-radius: 12px;
     padding: 1rem;
 }
 
 /* ── Metric ──────────────────────────────────────────── */
 [data-testid="stMetric"] {
-    background: #2D2D2D;
+    background: var(--bg-secondary);
     border-radius: 12px;
     padding: 1rem;
-    border: 1px solid #3a3a3a;
+    border: 1px solid var(--border-color);
 }
 
 [data-testid="stMetricValue"] {
-    color: #E63946 !important;
+    color: var(--accent) !important;
     font-weight: 700 !important;
+}
+
+[data-testid="stMetricLabel"] {
+    color: var(--text-muted) !important;
 }
 
 /* ── Divider ─────────────────────────────────────────── */
 hr {
-    border-color: #2D2D2D !important;
+    border-color: var(--border-color) !important;
+    margin: 0.75rem 0 !important;
+}
+
+/* ── Streamlit divider fix ───────────────────────────── */
+[data-testid="stSidebar"] hr {
+    border-color: var(--border-color) !important;
 }
 
 /* ── Scrollbar ───────────────────────────────────────── */
-::-webkit-scrollbar {
-    width: 6px;
-}
-
-::-webkit-scrollbar-track {
-    background: #1A1A1A;
-}
-
-::-webkit-scrollbar-thumb {
-    background: #E63946;
-    border-radius: 3px;
-}
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-primary); }
+::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 3px; }
 
 /* ── RTL Support (Arabic) ────────────────────────────── */
-[lang="ar"] {
+.rtl {
+    direction: rtl !important;
+    text-align: right !important;
+}
+
+.rtl .nav-item {
+    flex-direction: row-reverse;
+}
+
+/* Streamlit RTL global */
+[data-lang="ar"] * {
     direction: rtl;
     text-align: right;
+}
+
+/* ── Sidebar logo area ───────────────────────────────── */
+.sidebar-logo {
+    text-align: center;
+    padding: 1.2rem 1rem 0.8rem;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 0.5rem;
+}
+
+.sidebar-logo h2 {
+    color: var(--accent) !important;
+    margin: 0.3rem 0 0 0;
+    font-size: 1.1rem;
+    font-weight: 800;
+}
+
+.sidebar-logo p {
+    color: var(--text-muted) !important;
+    font-size: 0.72rem;
+    margin: 0;
+}
+
+/* ── Footer ──────────────────────────────────────────── */
+.sidebar-footer {
+    text-align: center;
+    padding: 0.75rem;
+    font-size: 0.72rem;
+    color: var(--text-faint) !important;
 }
