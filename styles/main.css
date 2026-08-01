@@ -499,6 +499,39 @@ hr { border-color: var(--border-color) !important; margin: 1rem 0 !important; }
 .about-section h4 { font-size: 1rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem; }
 .about-section p  { font-size: 0.9rem; color: var(--text-secondary) !important; line-height: 1.65; margin: 0; }
 
+.model-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+.model-table tr {
+    border-bottom: 1px solid var(--border-subtle);
+}
+.model-table tr:last-child { border-bottom: none; }
+.model-key {
+    padding: 0.6rem 0;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    width: 45%;
+}
+.model-val {
+    padding: 0.6rem 0;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    font-family: 'JetBrains Mono', monospace;
+}
+
+.about-footer {
+    text-align: center;
+    color: var(--text-faint) !important;
+    font-size: 0.8rem;
+    margin-top: 2rem;
+    padding-bottom: 1rem;
+}
+
 .tech-pill {
     display: inline-flex;
     align-items: center;
