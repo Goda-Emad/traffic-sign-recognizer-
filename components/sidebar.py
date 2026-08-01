@@ -1,310 +1,312 @@
+# ═══════════════════════════════════════════════════════════════════
+#  components/sidebar.py — Shared Sidebar
+#  Traffic Sign Recognizer
+# ═══════════════════════════════════════════════════════════════════
 import streamlit as st
 
-PAGES = [
-    {"icon": "🏠", "en": "Home",    "ar": "الرئيسية",   "path": "app.py"},
-    {"icon": "🔍", "en": "Predict", "ar": "تنبؤ",        "path": "pages/2_🔍_Predict.py"},
-    {"icon": "📊", "en": "Results", "ar": "النتائج",     "path": "pages/3_📊_Results.py"},
-    {"icon": "ℹ️", "en": "About",   "ar": "عن المشروع",  "path": "pages/4_ℹ️_About.py"},
+# ── Page definitions ─────────────────────────────────────────────
+NAV = [
+    ("🔍  Predict",  "🔍  تنبؤ",        "pages/2_🔍_Predict.py"),
+    ("📊  Results",  "📊  النتائج",      "pages/3_📊_Results.py"),
+    ("ℹ️  About",    "ℹ️  عن المشروع",   "pages/4_ℹ️_About.py"),
 ]
 
 
+# ── Helper ───────────────────────────────────────────────────────
 def get_text(en: str, ar: str) -> str:
-    return ar if st.session_state.get("lang", "en") == "ar" else en
+    return ar if st.session_state.get("lang", "EN") == "AR" else en
 
 
-def _build_theme_css() -> str:
-    theme  = st.session_state.get("theme", "dark")
-    is_rtl = st.session_state.get("lang", "en") == "ar"
+# ── CSS injection ────────────────────────────────────────────────
+def _inject_css():
+    THEME = st.session_state.get("theme", "dark")
+    LANG  = st.session_state.get("lang",  "EN")
 
-    if theme == "light":
-        v = dict(
-            bg_primary="#F5F5F5", bg_secondary="#FFFFFF", bg_card="#FFFFFF",
-            bg_tertiary="#EEEEEE", border="#DDDDDD",
-            accent="#E63946", accent_soft="rgba(230,57,70,0.09)",
-            text="#1A1A1A", muted="#666666", faint="#999999",
-            sidebar_bg="#EBEBEB",
-        )
+    # ── Palette ───────────────────────────────────────────────────
+    ACCENT  = "#E63946"
+    GOLD    = "#E63946"   # keep brand consistent
+    FF      = "Tajawal" if LANG == "AR" else "IBM Plex Sans"
+    DIR     = "rtl"      if LANG == "AR" else "ltr"
+
+    if THEME == "dark":
+        NAV_BG  = "#1A1A1A"
+        APP_BG  = "#1A1A1A"
+        CARD_BG = "#2D2D2D"
+        WHITE   = "#F1F1F1"
+        GREY    = "#888888"
+        BORDER  = "#3A3A3A"
+        METRIC_BG = "#2D2D2D"
+        METRIC_BORDER = "#3A3A3A"
+        UPLOADER_BG = "#2D2D2D"
     else:
-        v = dict(
-            bg_primary="#1A1A1A", bg_secondary="#2D2D2D", bg_card="#2D2D2D",
-            bg_tertiary="#3A3A3A", border="#3A3A3A",
-            accent="#E63946", accent_soft="rgba(230,57,70,0.13)",
-            text="#F1F1F1", muted="#888888", faint="#555555",
-            sidebar_bg="#2D2D2D",
-        )
+        NAV_BG  = "#EBEBEB"
+        APP_BG  = "#F5F5F5"
+        CARD_BG = "#FFFFFF"
+        WHITE   = "#1A1A1A"
+        GREY    = "#555555"
+        BORDER  = "#DDDDDD"
+        METRIC_BG = "#FFFFFF"
+        METRIC_BORDER = "#DDDDDD"
+        UPLOADER_BG = "#FFFFFF"
 
-    dir_val   = "rtl" if is_rtl else "ltr"
-    align_val = "right" if is_rtl else "left"
-
-    return f"""
+    st.markdown(f"""
 <style>
-/* ══ Variables ══════════════════════════════════════ */
-:root {{
-    --bg-primary:   {v['bg_primary']};
-    --bg-secondary: {v['bg_secondary']};
-    --bg-card:      {v['bg_card']};
-    --bg-tertiary:  {v['bg_tertiary']};
-    --border:       {v['border']};
-    --accent:       {v['accent']};
-    --accent-soft:  {v['accent_soft']};
-    --text:         {v['text']};
-    --muted:        {v['muted']};
-    --faint:        {v['faint']};
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600;700&family=Tajawal:wght@400;700;800&display=swap');
+
+/* ══ App background ══════════════════════════════════════ */
+.stApp {{ background-color: {APP_BG} !important; }}
+
+/* ══ Direction ═══════════════════════════════════════════ */
+.stApp, .stApp p, .stApp h1, .stApp h2, .stApp h3,
+.stApp span, .stMarkdown p {{
+    direction: {DIR} !important;
+    font-family: '{FF}', sans-serif !important;
+    color: {WHITE} !important;
 }}
 
-/* ══ App background ════════════════════════════════ */
-.stApp {{ background-color: {v['bg_primary']} !important; }}
-
-/* ══ Direction ═════════════════════════════════════ */
-.stApp, .stMarkdown, .stApp p, .stApp span,
-.stApp div, .stApp h1, .stApp h2, .stApp h3 {{
-    direction: {dir_val};
-    text-align: {align_val};
-}}
-
-/* ══ Global text ═══════════════════════════════════ */
-.stApp p, .stApp span, .stApp li,
-.stMarkdown p, .stMarkdown span, .stApp label {{
-    color: {v['text']} !important;
-}}
-.stApp h1, .stApp h2, .stApp h3, .stApp h4 {{
-    color: {v['text']} !important;
-}}
-
-/* ══ Sidebar ═══════════════════════════════════════ */
+/* ══ Sidebar shell ═══════════════════════════════════════ */
 [data-testid="stSidebar"] {{
-    background-color: {v['sidebar_bg']} !important;
-    border-right: 1px solid {v['border']} !important;
+    background: {NAV_BG} !important;
+    border-right: 1px solid {BORDER} !important;
 }}
-[data-testid="stSidebar"] * {{ color: {v['text']} !important; }}
 [data-testid="stSidebarNav"] {{ display: none !important; }}
-
-/* ══ Sidebar section cards ═════════════════════════ */
-.sb-card {{
-    background: {v['bg_card']} !important;
-    border: 1px solid {v['border']} !important;
-    border-radius: 14px !important;
-    padding: 0.85rem 1rem 0.6rem !important;
-    margin: 0 0 0.5rem 0 !important;
-}}
-.sb-card-title {{
-    font-size: 0.78rem !important;
-    font-weight: 700 !important;
-    text-transform: uppercase !important;
-    letter-spacing: 0.06em !important;
-    color: {v['muted']} !important;
-    margin: 0 0 0.45rem 0 !important;
-    display: block !important;
+[data-testid="stSidebar"] div,
+[data-testid="stSidebar"] span,
+[data-testid="stSidebar"] p,
+[data-testid="stSidebar"] label {{
+    color: {WHITE} !important;
+    font-family: '{FF}', sans-serif !important;
+    direction: {DIR} !important;
 }}
 
-/* ══ Radio inside sidebar ══════════════════════════ */
-[data-testid="stSidebar"] .stRadio {{ margin: 0 !important; }}
-[data-testid="stSidebar"] .stRadio label,
-[data-testid="stSidebar"] .stRadio span {{
-    color: {v['text']} !important;
-    font-size: 0.88rem !important;
-}}
-
-/* ══ Nav page links ════════════════════════════════ */
-[data-testid="stSidebar"] a[data-testid="stPageLink"] {{
-    background: transparent !important;
+/* ══ ALL sidebar buttons — base style ═══════════════════ */
+[data-testid="stSidebar"] .stButton > button {{
+    background:    transparent !important;
+    border:        1px solid transparent !important;
+    color:         {GREY} !important;
     border-radius: 8px !important;
-    padding: 0.35rem 0.6rem !important;
-    margin-bottom: 0.1rem !important;
-    display: flex !important;
-    align-items: center !important;
-    transition: background 0.15s ease !important;
+    width:         100% !important;
+    font-size:     .88rem !important;
+    font-weight:   500 !important;
+    padding:       9px 14px !important;
+    margin-bottom: 2px !important;
+    text-align:    {DIR} !important;
+    transition:    all .18s ease !important;
+    font-family:   '{FF}', sans-serif !important;
 }}
-[data-testid="stSidebar"] a[data-testid="stPageLink"] span,
-[data-testid="stSidebar"] a[data-testid="stPageLink"] p {{
-    color: {v['text']} !important;
-    font-weight: 500 !important;
-    font-size: 0.9rem !important;
-}}
-[data-testid="stSidebar"] a[data-testid="stPageLink"]:hover {{
-    background: {v['accent_soft']} !important;
-}}
-[data-testid="stSidebar"] a[data-testid="stPageLink"]:hover span,
-[data-testid="stSidebar"] a[data-testid="stPageLink"]:hover p {{
-    color: {v['accent']} !important;
+[data-testid="stSidebar"] .stButton > button:hover {{
+    background:   {ACCENT}18 !important;
+    color:        {ACCENT}   !important;
+    border-color: {ACCENT}44 !important;
 }}
 
-/* ══ Result / team cards ═══════════════════════════ */
+/* ══ Theme / Language toggle buttons ════════════════════ */
+.toggle-wrap .stButton > button {{
+    background:    {CARD_BG} !important;
+    border:        1px solid {BORDER} !important;
+    color:         {WHITE} !important;
+    font-weight:   600 !important;
+    margin-bottom: 4px !important;
+}}
+.toggle-wrap .stButton > button:hover {{
+    border-color: {ACCENT} !important;
+    color:        {ACCENT}  !important;
+}}
+
+/* ══ Home button — accent tint ═══════════════════════════ */
+.home-wrap .stButton > button {{
+    background:    {ACCENT}18 !important;
+    border:        1px solid {ACCENT}55 !important;
+    color:         {ACCENT}  !important;
+    font-weight:   700 !important;
+    margin-bottom: 6px !important;
+}}
+.home-wrap .stButton > button:hover {{
+    background:    {ACCENT}35 !important;
+    border-color:  {ACCENT}  !important;
+}}
+
+/* ══ Nav buttons ═════════════════════════════════════════ */
+.nav-wrap .stButton > button {{
+    background:    {CARD_BG}   !important;
+    border:        1px solid {BORDER} !important;
+    color:         {WHITE}    !important;
+    font-weight:   500 !important;
+    margin-bottom: 3px !important;
+}}
+.nav-wrap .stButton > button:hover {{
+    background:    {ACCENT}18 !important;
+    border-color:  {ACCENT}55 !important;
+    color:         {ACCENT}   !important;
+}}
+
+/* ══ Cards (result / team) ═══════════════════════════════ */
 .result-card {{
-    background: {v['bg_card']} !important;
-    border: 1px solid {v['accent']} !important;
+    background:    {CARD_BG} !important;
+    border:        1px solid {ACCENT} !important;
     border-radius: 16px !important;
-    padding: 1.5rem 2rem !important;
+    padding:       1.5rem 2rem !important;
     margin-bottom: 1rem !important;
-    transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+    transition:    transform .2s ease, box-shadow .2s ease !important;
 }}
 .result-card:hover {{
-    transform: translateY(-3px) !important;
-    box-shadow: 0 4px 20px rgba(230,57,70,0.15) !important;
+    transform:  translateY(-3px) !important;
+    box-shadow: 0 4px 20px {ACCENT}26 !important;
 }}
-.result-label      {{ color: {v['text']}   !important; font-size:1.8rem; font-weight:700; text-align:center; }}
-.result-confidence {{ color: {v['accent']} !important; text-align:center; margin-top:0.3rem; }}
+.result-label      {{ color: {WHITE}  !important; font-size:1.8rem; font-weight:700; text-align:center; }}
+.result-confidence {{ color: {ACCENT} !important; text-align:center; margin-top:.3rem; }}
 
 .team-card {{
-    background: {v['bg_card']} !important;
-    border: 1px solid {v['border']} !important;
+    background:    {CARD_BG} !important;
+    border:        1px solid {BORDER} !important;
     border-radius: 12px !important;
-    padding: 1.2rem !important;
-    text-align: center !important;
-    transition: transform 0.2s, border-color 0.2s !important;
+    padding:       1.2rem !important;
+    text-align:    center !important;
+    transition:    transform .2s, border-color .2s !important;
 }}
-.team-card:hover {{ transform: translateY(-3px) !important; border-color: {v['accent']} !important; }}
-.team-name {{ color: {v['text']}   !important; font-weight: 700; }}
-.team-role {{ color: {v['muted']}  !important; font-size: 0.8rem; }}
-.team-card a {{ color: {v['accent']} !important; text-decoration: none; font-weight: 600; }}
+.team-card:hover {{ transform: translateY(-3px) !important; border-color: {ACCENT} !important; }}
+.team-name {{ color: {WHITE}  !important; font-weight: 700; }}
+.team-role {{ color: {GREY}   !important; font-size: .8rem; }}
+.team-card a {{ color: {ACCENT} !important; text-decoration: none; font-weight: 600; }}
 
-/* ══ Tag ════════════════════════════════════════════ */
+/* ══ Tag ═════════════════════════════════════════════════ */
 .tag {{
-    display: inline-block;
-    background: {v['accent_soft']};
-    color: {v['accent']};
+    display:       inline-block;
+    background:    {ACCENT}18;
+    color:         {ACCENT};
     border-radius: 8px;
-    padding: 0.3rem 0.8rem;
-    font-size: 0.85rem;
-    margin: 0.2rem;
-    font-weight: 600;
+    padding:       .3rem .8rem;
+    font-size:     .85rem;
+    margin:        .2rem;
+    font-weight:   600;
 }}
 
-/* ══ Metric ════════════════════════════════════════ */
+/* ══ Metric ══════════════════════════════════════════════ */
 [data-testid="stMetric"] {{
-    background: {v['bg_card']} !important;
-    border: 1px solid {v['border']} !important;
+    background:    {METRIC_BG} !important;
+    border:        1px solid {METRIC_BORDER} !important;
     border-radius: 12px !important;
-    padding: 1rem !important;
+    padding:       1rem !important;
 }}
-[data-testid="stMetricValue"] {{ color: {v['accent']} !important; font-weight: 700 !important; }}
-[data-testid="stMetricLabel"] {{ color: {v['muted']}  !important; }}
+[data-testid="stMetricValue"] {{ color: {ACCENT} !important; font-weight: 700 !important; }}
+[data-testid="stMetricLabel"] {{ color: {GREY}   !important; }}
 
-/* ══ File uploader ═════════════════════════════════ */
+/* ══ File uploader ═══════════════════════════════════════ */
 [data-testid="stFileUploader"] {{
-    background: {v['bg_card']} !important;
-    border: 2px dashed {v['accent']} !important;
+    background:    {UPLOADER_BG} !important;
+    border:        2px dashed {ACCENT} !important;
     border-radius: 12px !important;
 }}
 
-/* ══ Buttons ════════════════════════════════════════ */
-.stButton > button {{
-    background-color: {v['accent']} !important;
-    color: #fff !important;
-    border: none !important;
-    border-radius: 8px !important;
-    font-weight: 600 !important;
-    transition: opacity 0.2s ease !important;
+/* ══ Main buttons ════════════════════════════════════════ */
+.stApp .stButton > button {{
+    background-color: {ACCENT} !important;
+    color:            #fff !important;
+    border:           none !important;
+    border-radius:    8px !important;
+    font-weight:      600 !important;
+    transition:       opacity .2s ease !important;
 }}
-.stButton > button:hover {{ opacity: 0.88 !important; }}
+.stApp .stButton > button:hover {{ opacity: .88 !important; }}
 
-/* ══ Divider / scrollbar ════════════════════════════ */
-hr {{ border-color: {v['border']} !important; }}
+/* ══ Divider / scrollbar ═════════════════════════════════ */
+hr {{ border-color: {BORDER} !important; }}
 ::-webkit-scrollbar       {{ width: 6px; }}
-::-webkit-scrollbar-track {{ background: {v['bg_primary']}; }}
-::-webkit-scrollbar-thumb {{ background: {v['accent']}; border-radius: 3px; }}
+::-webkit-scrollbar-track {{ background: {APP_BG}; }}
+::-webkit-scrollbar-thumb {{ background: {ACCENT}; border-radius: 3px; }}
 
-/* ══ Top header bar (page names) ════════════════════ */
+/* ══ Top header ══════════════════════════════════════════ */
 header[data-testid="stHeader"] {{
-    background-color: {v['bg_secondary']} !important;
-    border-bottom: 1px solid {v['border']} !important;
+    background-color: {CARD_BG} !important;
+    border-bottom:    1px solid {BORDER} !important;
 }}
-header[data-testid="stHeader"] * {{ color: {v['text']} !important; }}
-
-/* ══ Multipage tab nav (page names at top) ══════════ */
-[data-testid="stMainMenu"] {{ color: {v['text']} !important; }}
-nav[data-testid="stSidebarNav"] a span {{ color: {v['text']} !important; }}
-
-/* Show page title in header */
-[data-testid="stAppViewBlockContainer"] > div:first-child h1 {{
-    display: block !important;
-}}
+header[data-testid="stHeader"] * {{ color: {WHITE} !important; }}
 </style>
-"""
+""", unsafe_allow_html=True)
 
 
-def _apply_theme():
-    """Backward-compat alias."""
-    st.markdown(_build_theme_css(), unsafe_allow_html=True)
+# ── Divider helper ───────────────────────────────────────────────
+def _divider(margin="10px 0"):
+    BORDER = "#3A3A3A" if st.session_state.get("theme","dark") == "dark" else "#DDDDDD"
+    st.markdown(
+        f'<div style="height:1px;background:{BORDER};margin:{margin};"></div>',
+        unsafe_allow_html=True,
+    )
 
 
+# ── Main render ──────────────────────────────────────────────────
 def render_sidebar():
-    # ── Init session state ────────────────────────────
-    if "lang"  not in st.session_state: st.session_state["lang"]  = "en"
-    if "theme" not in st.session_state: st.session_state["theme"] = "dark"
+    if "theme" not in st.session_state: st.session_state.theme = "dark"
+    if "lang"  not in st.session_state: st.session_state.lang  = "EN"
+
+    THEME = st.session_state.theme
+    LANG  = st.session_state.lang
+    ACCENT = "#E63946"
+
+    # inject CSS first so everything is themed before widgets render
+    _inject_css()
 
     with st.sidebar:
 
-        # ── Logo ──────────────────────────────────────
-        st.markdown("""
-        <div style='text-align:center; padding:1.2rem 0 0.8rem;'>
-            <div style='font-size:2.5rem; line-height:1;'>🚦</div>
-            <h2 style='color:#E63946; margin:0.3rem 0 0;
-                       font-size:1.1rem; font-weight:800; direction:ltr;'>
-                Traffic Sign
-            </h2>
-            <p style='font-size:0.72rem; margin:0;'>Recognizer v1.0.0</p>
-        </div>
-        """, unsafe_allow_html=True)
-
-        st.divider()
-
-        # ══ LANGUAGE CARD ══════════════════════════════
-        st.markdown("""
-        <div class='sb-card'>
-            <span class='sb-card-title'>🌐 Language / اللغة</span>
-        </div>
-        """, unsafe_allow_html=True)
-        lang = st.radio(
-            label="lang",
-            options=["🇬🇧 English", "🇪🇬 العربية"],
-            index=1 if st.session_state["lang"] == "ar" else 0,
-            horizontal=True,
-            label_visibility="collapsed",
-            key="lang_radio",
-        )
-        st.session_state["lang"] = "ar" if "العربية" in lang else "en"
-
-        st.divider()
-
-        # ══ THEME CARD ═════════════════════════════════
-        theme_label = get_text("Theme", "المظهر")
+        # ── Brand / Logo ──────────────────────────────────────
+        name = "نظام التعرف على إشارات المرور" if LANG == "AR" else "Traffic Sign Recognizer"
         st.markdown(f"""
-        <div class='sb-card'>
-            <span class='sb-card-title'>🎨 {theme_label}</span>
+        <div style="display:flex;align-items:center;gap:10px;padding:16px 6px 14px;">
+            <span style="font-size:2.2rem;line-height:1;">🚦</span>
+            <div>
+                <div style="font-size:.88rem;font-weight:700;">{name}</div>
+                <div style="font-size:.58rem;color:{ACCENT};font-weight:600;
+                            letter-spacing:1.1px;text-transform:uppercase;">
+                    AI TRAFFIC SYSTEM
+                </div>
+            </div>
         </div>
         """, unsafe_allow_html=True)
-        theme = st.radio(
-            label="theme",
-            options=["🌙 Dark", "☀️ Light"],
-            index=1 if st.session_state["theme"] == "light" else 0,
-            horizontal=True,
-            label_visibility="collapsed",
-            key="theme_radio",
-        )
-        st.session_state["theme"] = "light" if "Light" in theme else "dark"
 
-        st.divider()
+        _divider("0 0 10px")
 
-        # ══ NAVIGATION CARD ════════════════════════════
-        nav_label = get_text("Navigation", "الصفحات")
+        # ── Theme toggle ──────────────────────────────────────
+        thm_lbl = "☀️  Light" if THEME == "dark" else "🌙  Dark"
+        st.markdown('<div class="toggle-wrap">', unsafe_allow_html=True)
+        if st.button(thm_lbl, key="sb_theme", use_container_width=True):
+            st.session_state.theme = "light" if THEME == "dark" else "dark"
+            st.rerun()
+        st.markdown('</div>', unsafe_allow_html=True)
+
+        # ── Language toggle ───────────────────────────────────
+        lng_lbl = "🌐  العربية" if LANG == "EN" else "🌐  English"
+        st.markdown('<div class="toggle-wrap">', unsafe_allow_html=True)
+        if st.button(lng_lbl, key="sb_lang", use_container_width=True):
+            st.session_state.lang = "AR" if LANG == "EN" else "EN"
+            st.rerun()
+        st.markdown('</div>', unsafe_allow_html=True)
+
+        _divider("8px 0")
+
+        # ── Home button ───────────────────────────────────────
+        home_lbl = "🏠  الرئيسية" if LANG == "AR" else "🏠  Home"
+        st.markdown('<div class="home-wrap">', unsafe_allow_html=True)
+        if st.button(home_lbl, key="sb_home", use_container_width=True):
+            st.switch_page("app.py")
+        st.markdown('</div>', unsafe_allow_html=True)
+
+        _divider("4px 0 8px")
+
+        # ── Navigation ────────────────────────────────────────
+        st.markdown('<div class="nav-wrap">', unsafe_allow_html=True)
+        for en_lbl, ar_lbl, fpath in NAV:
+            label = ar_lbl if LANG == "AR" else en_lbl
+            key   = "sb_nav_" + fpath.replace("/", "_").replace(".", "_")
+            if st.button(label, key=key, use_container_width=True):
+                st.switch_page(fpath)
+        st.markdown('</div>', unsafe_allow_html=True)
+
+        _divider("10px 0 8px")
+
+        # ── Footer ────────────────────────────────────────────
+        GREY = "#888" if THEME == "dark" else "#555"
         st.markdown(f"""
-        <div class='sb-card'>
-            <span class='sb-card-title'>🗂️ {nav_label}</span>
+        <div style="font-size:.67rem;color:{GREY};padding:0 4px;line-height:2;">
+            Made with ❤️ by Goda Emad
         </div>
         """, unsafe_allow_html=True)
-        for page in PAGES:
-            label = f"{page['icon']} {get_text(page['en'], page['ar'])}"
-            st.page_link(page["path"], label=label)
-
-        st.divider()
-
-        # ── Footer ────────────────────────────────────
-        made = get_text("Made with ❤️ by Goda Emad", "صنع بـ ❤️ بواسطة جودا عماد")
-        st.markdown(
-            f"<p style='text-align:center; font-size:0.72rem; direction:ltr;'>{made}</p>",
-            unsafe_allow_html=True,
-        )
-
-    # ── Inject theme CSS over full page ───────────────
-    st.markdown(_build_theme_css(), unsafe_allow_html=True)
