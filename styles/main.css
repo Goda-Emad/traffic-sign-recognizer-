@@ -283,6 +283,31 @@ hr { border-color: var(--border-color) !important; margin: 1rem 0 !important; }
     line-height: 1.7;
 }
 .hero-cta-row { margin-top: 0.5rem; }
+.hero-version {
+    font-size: 0.78rem;
+    color: var(--text-faint) !important;
+    margin-top: 1rem;
+    font-family: 'JetBrains Mono', monospace;
+}
+
+/* ── app.py Nav Cards ─────────────────────────────── */
+.nav-page-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 2rem 1rem 1.5rem;
+    text-align: center;
+    margin-bottom: 0.6rem;
+    transition: border-color var(--transition), transform var(--transition), box-shadow var(--transition);
+}
+.nav-page-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-accent);
+}
+.nav-page-icon  { font-size: 2.5rem; margin-bottom: 0.6rem; }
+.nav-page-title { font-size: 1.05rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.3rem; }
+.nav-page-desc  { font-size: 0.82rem; color: var(--text-muted); line-height: 1.45; }
 
 .step-num {
     font-size: 1.8rem;
