@@ -1,6 +1,5 @@
 import streamlit as st
 
-# ── Pages Config ──────────────────────────────────────
 PAGES = [
     {"icon": "🏠", "en": "Home",    "ar": "الرئيسية",  "path": "app.py"},
     {"icon": "🔍", "en": "Predict", "ar": "تنبؤ",       "path": "pages/2_🔍_Predict.py"},
@@ -8,9 +7,9 @@ PAGES = [
     {"icon": "ℹ️", "en": "About",   "ar": "عن المشروع", "path": "pages/4_ℹ️_About.py"},
 ]
 
-# ── Light / Dark CSS ───────────────────────────────────
 DARK_CSS = """
 <style>
+    [data-testid="stSidebarNav"] { display: none !important; }
     .main                          { background-color: #1A1A1A !important; }
     .result-card, .team-card       { background: #2D2D2D !important; border: 1px solid #E63946 !important; }
     .result-label, .team-name      { color: #F1F1F1 !important; }
@@ -18,11 +17,13 @@ DARK_CSS = """
     .header h1                     { color: #F1F1F1 !important; }
     .header p                      { color: #888 !important; }
     [data-testid="stSidebar"]      { background-color: #1A1A1A !important; border-right: 1px solid #2D2D2D; }
+    .nav-card a                    { color: #F1F1F1 !important; text-decoration: none !important; }
 </style>
 """
 
 LIGHT_CSS = """
 <style>
+    [data-testid="stSidebarNav"] { display: none !important; }
     .main                          { background-color: #F5F5F5 !important; }
     .result-card, .team-card       { background: #ffffff !important; border: 1px solid #ddd !important; }
     .result-label, .team-name      { color: #1A1A1A !important; }
@@ -33,19 +34,16 @@ LIGHT_CSS = """
     h1, h2, h3, h4                 { color: #1A1A1A !important; }
     [data-testid="stSidebar"]      { background-color: #ebebeb !important; border-right: 1px solid #ddd; }
     [data-testid="stMetricValue"]  { color: #E63946 !important; }
+    .nav-card a                    { color: #1A1A1A !important; text-decoration: none !important; }
 </style>
 """
 
 
 def get_text(en: str, ar: str) -> str:
-    """Return text based on selected language."""
     return ar if st.session_state.get("lang", "en") == "ar" else en
 
 
 def render_sidebar():
-    """Render sidebar with language, theme toggles and navigation."""
-
-    # ── Init session defaults ──────────────────────────
     if "lang"  not in st.session_state: st.session_state["lang"]  = "en"
     if "theme" not in st.session_state: st.session_state["theme"] = "dark"
 
@@ -62,8 +60,13 @@ def render_sidebar():
 
         st.divider()
 
-        # ── Language ───────────────────────────────────
-        st.markdown(f"#### 🌐 {get_text('Language', 'اللغة')}")
+        # ── Language Card ──────────────────────────────
+        st.markdown(f"""
+        <div class='result-card' style='padding:1rem; margin-bottom:0.5rem;'>
+            <p style='margin:0 0 0.5rem 0; font-weight:600;'>🌐 {get_text('Language', 'اللغة')}</p>
+        </div>
+        """, unsafe_allow_html=True)
+
         lang = st.radio(
             label="lang",
             options=["🇬🇧 English", "🇪🇬 العربية"],
@@ -74,8 +77,13 @@ def render_sidebar():
 
         st.divider()
 
-        # ── Theme ──────────────────────────────────────
-        st.markdown(f"#### 🎨 {get_text('Theme', 'المظهر')}")
+        # ── Theme Card ─────────────────────────────────
+        st.markdown(f"""
+        <div class='result-card' style='padding:1rem; margin-bottom:0.5rem;'>
+            <p style='margin:0 0 0.5rem 0; font-weight:600;'>🎨 {get_text('Theme', 'المظهر')}</p>
+        </div>
+        """, unsafe_allow_html=True)
+
         theme = st.radio(
             label="theme",
             options=["🌙 Dark", "☀️ Light"],
@@ -87,8 +95,12 @@ def render_sidebar():
 
         st.divider()
 
-        # ── Navigation Cards ───────────────────────────
-        st.markdown(f"#### 🗂️ {get_text('Navigation', 'الصفحات')}")
+        # ── Navigation Card ────────────────────────────
+        st.markdown(f"""
+        <div class='result-card' style='padding:1rem;'>
+            <p style='margin:0 0 0.8rem 0; font-weight:600;'>🗂️ {get_text('Navigation', 'الصفحات')}</p>
+        </div>
+        """, unsafe_allow_html=True)
 
         for page in PAGES:
             label = f"{page['icon']} {get_text(page['en'], page['ar'])}"
