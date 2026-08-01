@@ -1,1 +1,175 @@
+/* ── Fonts ───────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
 
+* {
+    font-family: 'Inter', sans-serif;
+}
+
+/* ── Header ──────────────────────────────────────────── */
+.header {
+    text-align: center;
+    padding: 2rem 0 1rem 0;
+}
+
+.header h1 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: #F1F1F1;
+    margin-bottom: 0.3rem;
+}
+
+.header p {
+    color: #888;
+    font-size: 1rem;
+}
+
+/* ── Result Card ─────────────────────────────────────── */
+.result-card {
+    background: #2D2D2D;
+    border: 1px solid #E63946;
+    border-radius: 16px;
+    padding: 1.5rem 2rem;
+    margin-bottom: 1rem;
+    transition: transform 0.2s ease;
+}
+
+.result-card:hover {
+    transform: translateY(-3px);
+}
+
+.result-emoji {
+    font-size: 3rem;
+    text-align: center;
+    margin-bottom: 0.5rem;
+}
+
+.result-label {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #F1F1F1;
+    text-align: center;
+}
+
+.result-confidence {
+    font-size: 1rem;
+    color: #E63946;
+    text-align: center;
+    margin-top: 0.3rem;
+}
+
+/* ── Team Card ───────────────────────────────────────── */
+.team-card {
+    background: #2D2D2D;
+    border: 1px solid #3a3a3a;
+    border-radius: 12px;
+    padding: 1.2rem;
+    text-align: center;
+    transition: transform 0.2s ease;
+}
+
+.team-card:hover {
+    transform: translateY(-3px);
+    border-color: #E63946;
+}
+
+.team-name {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #F1F1F1;
+    margin-bottom: 0.3rem;
+}
+
+.team-role {
+    font-size: 0.8rem;
+    color: #888;
+    margin-bottom: 0.5rem;
+}
+
+.team-card a {
+    color: #E63946;
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.team-card a:hover {
+    text-decoration: underline;
+}
+
+/* ── Tags ────────────────────────────────────────────── */
+.tag {
+    display: inline-block;
+    background: #E6394622;
+    color: #E63946;
+    border-radius: 8px;
+    padding: 0.3rem 0.8rem;
+    font-size: 0.85rem;
+    margin: 0.2rem;
+    font-weight: 600;
+}
+
+/* ── Sidebar ─────────────────────────────────────────── */
+[data-testid="stSidebar"] {
+    background-color: #1A1A1A !important;
+    border-right: 1px solid #2D2D2D;
+}
+
+/* ── Buttons ─────────────────────────────────────────── */
+.stButton > button {
+    background-color: #E63946 !important;
+    color: #ffffff !important;
+    border: none !important;
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+    transition: opacity 0.2s ease !important;
+}
+
+.stButton > button:hover {
+    opacity: 0.85 !important;
+}
+
+/* ── File Uploader ───────────────────────────────────── */
+[data-testid="stFileUploader"] {
+    background: #2D2D2D;
+    border: 2px dashed #E63946;
+    border-radius: 12px;
+    padding: 1rem;
+}
+
+/* ── Metric ──────────────────────────────────────────── */
+[data-testid="stMetric"] {
+    background: #2D2D2D;
+    border-radius: 12px;
+    padding: 1rem;
+    border: 1px solid #3a3a3a;
+}
+
+[data-testid="stMetricValue"] {
+    color: #E63946 !important;
+    font-weight: 700 !important;
+}
+
+/* ── Divider ─────────────────────────────────────────── */
+hr {
+    border-color: #2D2D2D !important;
+}
+
+/* ── Scrollbar ───────────────────────────────────────── */
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: #1A1A1A;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #E63946;
+    border-radius: 3px;
+}
+
+/* ── RTL Support (Arabic) ────────────────────────────── */
+[lang="ar"] {
+    direction: rtl;
+    text-align: right;
+}
