@@ -1,48 +1,62 @@
-import os
+import json
 import numpy as np
 import streamlit as st
-
-# ── Force TF to use its own bundled Keras 2 (tf.keras) ───────────
-# Must be set BEFORE any keras/tensorflow import
-os.environ["TF_USE_LEGACY_KERAS"] = "1"
-
 import tensorflow as tf
+import h5py
+
 from core.constants import MODEL_PATH, CLASS_LABELS
 from utils.image_utils import preprocess_image
 
 
+def _patch_h5_model(src_path: str, dst_path: str) -> None:
+    """
+    Copy the .h5 model to dst_path, removing the unsupported
+    'groups' key from every DepthwiseConv2D layer config.
+    """
+    import shutil
+    shutil.copy2(src_path, dst_path)
+
+    with h5py.File(dst_path, "r+") as f:
+        if "model_config" not in f.attrs:
+            return
+
+        raw = f.attrs["model_config"]
+        if isinstance(raw, bytes):
+            raw = raw.decode("utf-8")
+
+        cfg = json.loads(raw)
+
+        def _fix(node):
+            if isinstance(node, dict):
+                if node.get("class_name") == "DepthwiseConv2D":
+                    node.get("config", {}).pop("groups", None)
+                for v in node.values():
+                    _fix(v)
+            elif isinstance(node, list):
+                for item in node:
+                    _fix(item)
+
+        _fix(cfg)
+        f.attrs["model_config"] = json.dumps(cfg)
+
+
 @st.cache_resource
 def load_model():
-    """Load Keras .h5 model with Keras-2-compatible loader."""
-    try:
-        # ── Approach 1: tf.keras (Keras 2 bundled inside TF) ─────
-        model = tf.keras.models.load_model(MODEL_PATH, compile=False)
-        return model
+    """
+    Load the Keras .h5 model, patching Keras-2 to Keras-3
+    incompatibility (DepthwiseConv2D 'groups' argument).
+    """
+    import os, tempfile
 
-    except TypeError:
-        # ── Approach 2: patch DepthwiseConv2D to drop 'groups' ───
-        # Keras 3 added 'groups' to DepthwiseConv2D config but the
-        # old .h5 files include it, causing a TypeError on load.
-        from tensorflow.keras.layers import DepthwiseConv2D as _DW
+    patched_path = os.path.join(
+        tempfile.gettempdir(), "traffic_sign_model_patched.h5"
+    )
 
-        class _PatchedDepthwiseConv2D(_DW):
-            def __init__(self, **kwargs):
-                kwargs.pop("groups", None)   # remove unsupported arg
-                super().__init__(**kwargs)
+    if not os.path.exists(patched_path):
+        _patch_h5_model(MODEL_PATH, patched_path)
 
-            @classmethod
-            def from_config(cls, config):
-                config.pop("groups", None)
-                return super().from_config(config)
-
-        custom_objects = {"DepthwiseConv2D": _PatchedDepthwiseConv2D}
-
-        model = tf.keras.models.load_model(
-            MODEL_PATH,
-            custom_objects=custom_objects,
-            compile=False,
-        )
-        return model
+    model = tf.keras.models.load_model(patched_path, compile=False)
+    return model
 
 
 def predict(image):
