@@ -67,3 +67,10 @@ with col2:
     """, unsafe_allow_html=True)
 
 with col3:
+    st.markdown(f"""
+    <div class='result-card' style='text-align:center; padding:1.5rem;'>
+        <div style='font-size:2.5rem;'>✅</div>
+        <h3 style='color:#E63946;'>03</h3>
+        <p>{get_text("Get prediction with confidence score", "احصل على النتيجة مع نسبة الثقة")}</p>
+    </div>
+    """, unsafe_allow_html=True)
